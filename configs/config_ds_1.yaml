@@ -5,8 +5,11 @@ apollo_map: SanFrancisco
 
 pop_size: 4
 npc_size: 2
-time_size: 10
-bounds: [[0, 30], [0, 3]]
+time_size: 30
+conflict_time: 4
+conflict_distance: 3
+period: 6
+bounds: [[5, 30], [0, 3], [0,2], [0,2], [2,4]]
 total_sim_time: 30
 p_mutation: 0.4
 p_crossover: 0.4

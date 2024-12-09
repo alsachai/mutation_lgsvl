@@ -34,9 +34,9 @@ class Fuzzer(object):
                              self.output_path,
                              self.cfgs['total_sim_time'],
                              self.cfgs['default_record_folder'],
-                             3,
-                             4,
-                             10,
+                             self.cfgs['conflict_time'],
+                             self.cfgs['conflict_distance'],
+                             self.cfgs['period'],
                              False,
                              self.cfgs['lgsvl_map'],
                              self.cfgs['apollo_map'])
@@ -45,9 +45,9 @@ class Fuzzer(object):
                              self.output_path,
                              self.cfgs['total_sim_time'],
                              self.cfgs['default_record_folder'],
-                             3,
-                             4,
-                             10,
+                             self.cfgs['conflict_time'],
+                             self.cfgs['conflict_distance'],
+                             self.cfgs['period'],
                              True,
                              self.cfgs['lgsvl_map'],
                              self.cfgs['apollo_map'])
@@ -64,9 +64,9 @@ class Fuzzer(object):
                                               cfgs['npc_size'], 
                                               cfgs['time_size'], 
                                               cfgs['max_gen'],
-                                              3,
-                                              4,
-                                              10)
+                                              cfgs['conflict_time'],
+                                              cfgs['conflict_distance'],
+                                              cfgs['period'])
         self.mutation_runner.init_pop()
         logger.info('Initilized Genetic Mutator.')
 
