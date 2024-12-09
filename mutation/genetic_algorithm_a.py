@@ -105,7 +105,7 @@ class GeneticMutator(object):
         # cross: generate new elements
         
         
-    def mutation(self):
+    def mutation(self, ga_iter):
         i = 0
         while(i<len(self.pop)) :
             eachChs = self.pop[i]
@@ -299,7 +299,7 @@ class GeneticMutator(object):
             # Make sure we clear touched_chs history book every gen
             # TODO: this process has bug
             self.touched_chs = []
-            self.cross()
+            # self.cross()
             self.mutation(i)
             if self.selection == 'top':
                 self.select_top2()
