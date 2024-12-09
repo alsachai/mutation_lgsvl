@@ -8,7 +8,7 @@ from datetime import datetime
 from loguru import logger
 
 from corpus.corpus import CorpusElement
-from mutation.local_genetic_algorithm import LocalGeneticMutator
+from mutation.local_genetic_algorithm_a import LocalGeneticMutator
 from mutation import restart
 
 class GeneticMutator(object):

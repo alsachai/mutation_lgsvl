@@ -330,7 +330,7 @@ class LocalGeneticMutator(object):
             
             # Make sure we clear touched_chs history book every gen
             self.touched_chs = []
-            self.cross()
+            # self.cross()
             self.mutation(i)
             if self.selection == 'top':
                 self.select_top2()

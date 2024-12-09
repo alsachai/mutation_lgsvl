@@ -36,8 +36,8 @@ class Simulator(object):
         self.cross_lines = None
         self.edge_lines = None
 
-        self.connect_lgsvl()
-        self.load_map(self.lgsvl_map)
+        # self.connect_lgsvl()
+        # self.load_map(self.lgsvl_map)
         self.isEgoFault = False
         self.isHit = False
         self.maxint = 130
@@ -122,13 +122,14 @@ class Simulator(object):
         ego_state = lgsvl.AgentState()
         ego_state.transform = self.sim.map_point_on_lane(ego_pos_vector)
         self.ego = self.sim.add_agent(EGO_VEHICLE_ID, lgsvl.AgentType.EGO, ego_state)
-        self.replay_list[0][0].append(self.get_speed(self.ego.state.velocity))
-        self.replay_list[0][0].append(self.ego.state.transform.position.x)
-        self.replay_list[0][0].append(self.ego.state.transform.position.y)
-        self.replay_list[0][0].append(self.ego.state.transform.position.z)
-        self.replay_list[0][0].append(self.ego.state.transform.rotation.roll)
-        self.replay_list[0][0].append(self.ego.state.transform.rotation.pitch)
-        self.replay_list[0][0].append(self.ego.state.transform.rotation.yaw)
+        ego_transfrom = ego_state.transform
+        self.replay_list[0][0].extend([self.get_speed(self.ego),
+                                       ego_transfrom.position.x,
+                                       ego_transfrom.position.y,
+                                       ego_transfrom.position.z,
+                                       ego_transfrom.rotation.x,
+                                       ego_transfrom.rotation.y,
+                                       ego_transfrom.rotation.z])
         
         ## ego destination
         des_method = ego_data['destination']['method']
@@ -159,13 +160,14 @@ class Simulator(object):
             npc_state = lgsvl.AgentState()
             npc_state.transform = self.sim.map_point_on_lane(npc_pos)
             npc = self.sim.add_agent(npc_type, lgsvl.AgentType.NPC, npc_state)
-            self.replay_list[m][0].append(self.get_speed(npc.state.velocity))
-            self.replay_list[m][0].append(npc.state.transform.position.x)
-            self.replay_list[m][0].append(npc.state.transform.position.y)
-            self.replay_list[m][0].append(npc.state.transform.position.z)
-            self.replay_list[m][0].append(npc.state.transform.rotation.x)
-            self.replay_list[m][0].append(npc.state.transform.rotation.y)
-            self.replay_list[m][0].append(npc.state.transform.rotation.z)
+            npc_transform = npc_state.transform
+            self.replay_list[m][0].extend([self.get_speed(npc),
+                                           npc_transform.position.x,
+                                           npc_transform.position.y,
+                                           npc_transform.position.z,
+                                           npc_transform.rotation.x,
+                                           npc_transform.rotation.y,
+                                           npc_transform.rotation.z])
             m = m + 1
             if npc_goal == 'fixed':
                 self.fixed_npc_list.append(npc)
@@ -191,6 +193,7 @@ class Simulator(object):
         self.edge_lines = self.data_prime['lines']['edge_lines']
 
     def runSimulation(self, scenario_obj, json_file, case_id):
+        self.connect_lgsvl()
         while(1):
             break_signal = False
                 
@@ -363,26 +366,27 @@ class Simulator(object):
                     for npc_i in range(len(self.mutated_npc_list)):
                         simulation_recording['frames'][time_index]['npc_' + str(npc_i)] = self.mutated_npc_list[npc_i].state
                     
-                self.replay_list[0][t+1].append(self.get_speed(self.ego.state.velocity))
-                self.replay_list[0][t+1].append(self.ego.state.transform.position.x)
-                self.replay_list[0][t+1].append(self.ego.state.transform.position.y)
-                self.replay_list[0][t+1].append(self.ego.state.transform.position.z)
-                self.replay_list[0][t+1].append(self.ego.state.transform.rotation.x)
-                self.replay_list[0][t+1].append(self.ego.state.transform.rotation.y)
-                self.replay_list[0][t+1].append(self.ego.state.transform.rotation.z)
-                m = 1   
-                for npc in self.mutated_npc_list:
-                    self.replay_list[m][t+1].append(self.get_speed(npc.state.velocity))
-                    self.replay_list[m][t+1].append(npc.state.transform.position.x)
-                    self.replay_list[m][t+1].append(npc.state.transform.position.y)
-                    self.replay_list[m][t+1].append(npc.state.transform.position.z)
-                    self.replay_list[m][t+1].append(npc.state.transform.rotation.x)
-                    self.replay_list[m][t+1].append(npc.state.transform.rotation.y)
-                    self.replay_list[m][t+1].append(npc.state.transform.rotation.z)
-                    m = m + 1
-                
                 if break_signal:
                     break
+                
+                ego_transform = self.ego.state.transform
+                self.replay_list[0][t+1].extend([self.get_speed(self.ego),
+                                                 ego_transform.position.x,
+                                                 ego_transform.position.y,
+                                                 ego_transform.position.z,
+                                                 ego_transform.rotation.x,
+                                                 ego_transform.rotation.y,
+                                                 ego_transform.rotation.z])
+                for m, npc in enumerate(self.mutated_npc_list, start=1):
+                    npc_transform = npc.state.transform
+                    self.replay_list[m][t+1].extend([self.get_speed(npc),
+                                                     npc_transform.position.x,
+                                                     npc_transform.position.y,
+                                                     npc_transform.position.z,
+                                                     npc_transform.rotation.x,
+                                                     npc_transform.rotation.y,
+                                                     npc_transform.rotation.z])
+                
             
             if break_signal:
                 time.sleep(5)
@@ -426,15 +430,15 @@ class Simulator(object):
         period_conflicts, saved_c_npcs = self.findConflicts(self.replay_list, int(time_slice_size), int(mutated_npc_num))
         potential_conflicts, saved_p_npcs = self.find_potential(self.replay_list, int(time_slice_size), int(mutated_npc_num))
         if self.is_exploit:
-            average_c = sum(conflict['score'] for conflict in self.period_conflicts if conflict is not None)
+            average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
             max_c = 0
-            for conflict in self.period_conflicts:
+            for conflict in period_conflicts:
                 if conflict['score'] > max_c:
                     max_c = conflict['score']
             fitness = average_c + max_c
         else:
-            average_c = sum(conflict['score'] for conflict in self.period_conflicts if conflict is not None)
-            number_c = len(self.period_conflicts)
+            average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
+            number_c = len(period_conflicts)
             fitness = math.log(average_c + 1) + math.log(number_c + 1)
         
         # Step 2 compute distance and check line error and filter npc_fault

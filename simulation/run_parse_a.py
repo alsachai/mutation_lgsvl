@@ -113,6 +113,8 @@ class Runner(object):
         with open(result_file, 'wb') as f_f:
             pickle.dump(resultDic, f_f)
             
+        if os.path.isfile(replay_file):
+            os.system("rm " + replay_file)
         replay_file = os.path.join(self.replay_path, scenario_id + '.obj')
         with open(replay_file, 'wb') as s_f:
             pickle.dump(replay_list, s_f)
