@@ -30,7 +30,7 @@ class Fuzzer(object):
         logger.add(log_file, level=level)
         self.record_cfgs()
 
-        self.runner_explore = Runner(cfgs['scenario_env_json'],
+        self.runner = Runner(cfgs['scenario_env_json'],
                              self.output_path,
                              self.cfgs['total_sim_time'],
                              self.cfgs['default_record_folder'],
@@ -41,19 +41,8 @@ class Fuzzer(object):
                              self.cfgs['lgsvl_map'],
                              self.cfgs['apollo_map'])
         
-        self.runner_exploit = Runner(cfgs['scenario_env_json'],
-                             self.output_path,
-                             self.cfgs['total_sim_time'],
-                             self.cfgs['default_record_folder'],
-                             self.cfgs['conflict_time'],
-                             self.cfgs['conflict_distance'],
-                             self.cfgs['period'],
-                             True,
-                             self.cfgs['lgsvl_map'],
-                             self.cfgs['apollo_map'])
         
-        self.mutation_runner = GeneticMutator(self.runner_explore, 
-                                              self.runner_exploit, 
+        self.mutation_runner = GeneticMutator(self.runner, 
                                               self.cfgs['selection'], 
                                               self.output_path, 
                                               self.scenario_name, 

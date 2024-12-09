@@ -47,6 +47,7 @@ class Runner(object):
         clear_and_create(self.scenario_path)
         clear_and_create(self.result_path)
         clear_and_create(self.record_path)
+        clear_and_create(self.replay_path)
         
         self.conflict_t = conflict_t
         self.conflict_d = conflict_d
@@ -113,8 +114,6 @@ class Runner(object):
         with open(result_file, 'wb') as f_f:
             pickle.dump(resultDic, f_f)
             
-        if os.path.isfile(replay_file):
-            os.system("rm " + replay_file)
         replay_file = os.path.join(self.replay_path, scenario_id + '.obj')
         with open(replay_file, 'wb') as s_f:
             pickle.dump(replay_list, s_f)

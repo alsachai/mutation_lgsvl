@@ -12,7 +12,7 @@ from mutation.local_genetic_algorithm_a import LocalGeneticMutator
 from mutation import restart
 
 class GeneticMutator(object):
-    def __init__(self, runner_explore, runner_exploit, selection, output_path, scenario_name, bounds, pm, pc, pop_size, NPC_size, time_size, max_gen, conflict_t, conflict_d, period):
+    def __init__(self, runner, selection, output_path, scenario_name, bounds, pm, pc, pop_size, NPC_size, time_size, max_gen, conflict_t, conflict_d, period):
         self.pop = []
         self.bounds = bounds                # The value ranges of the inner most elements
         self.pm = pm
@@ -36,8 +36,7 @@ class GeneticMutator(object):
         self.conflict_d = conflict_d
         self.period = period
 
-        self.runner_explore = runner_explore
-        self.runner_exploit = runner_exploit
+        self.runner = runner
         self.selection = selection
         self.scenario_name = scenario_name
         self.output_path = output_path
@@ -154,7 +153,7 @@ class GeneticMutator(object):
             before_fitness = eachChs.fitness
             # TODO: fixed
             # 1. run simulator for each modified elements
-            fitness, scenario_id, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs = self.runner_explore.run(eachChs.scenario)
+            fitness, scenario_id, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs = self.runner.run(eachChs.scenario)
             # 2. creat new elements or update fitness_score and coverage feat
             eachChs.fitness = fitness
             eachChs.scenario_id = scenario_id
@@ -268,7 +267,7 @@ class GeneticMutator(object):
                     scenario_data[n_s][t_s].append(a)
 
             # 2. run simulator -> get outputs
-            fitness_score, scenario_id, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs = self.runner_explore.run(scenario_data)
+            fitness_score, scenario_id, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs = self.runner.run(scenario_data)
             # 3. generate new elements
             new_element = CorpusElement(scenario_id, scenario_data, fitness_score, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs)
             self.pop.append(new_element)
@@ -344,7 +343,7 @@ class GeneticMutator(object):
             if noprogress:
                 logger.info("    ### Restart Based on Generation: " + str(i) + " ###    ")
                 oldCkName = self.ga_checkpoints_path
-                newPop = restart.generate_restart_scenarios(self.runner_explore, self.ga_log, i, oldCkName, 1000, self.bounds)
+                newPop = restart.generate_restart_scenarios(self.runner, self.ga_log, i, oldCkName, 1000, self.bounds)
                 self.pop = copy.deepcopy(newPop)
                 self.hasRestarted = True
                 best, self.bestIndex = self.find_best()
@@ -375,9 +374,13 @@ class GeneticMutator(object):
                     logger.debug(" === Start of Local Iterative Search === ")
                     # Increase mutation rate a little bit to jump out of local maxima
                     local_output_path = os.path.join(self.output_path, 'local_ga', 'local_' + str(i))
-                    lis = LocalGeneticMutator(self.runner_exploit, self.selection, local_output_path, i, self.ga_log, self.progress_log, self.scenario_name, self.bounds, self.pm * 1.5, self.pc, self.pop_size, self.NPC_size, self.time_size, self.numOfGenInLis)
+                    self.runner.is_exploit = True
+                    self.runner.sim.is_exploit = True
+                    lis = LocalGeneticMutator(self.runner, self.selection, local_output_path, i, self.ga_log, self.progress_log, self.scenario_name, self.bounds, self.pm * 1.5, self.pc, self.pop_size, self.NPC_size, self.time_size, self.numOfGenInLis)
                     lis.setLisPop(self.g_best)
                     lisBestChs = lis.process(i)
+                    self.runner.is_exploit = False
+                    self.runner.sim.is_exploit = False
                     logger.debug(" --- Best fitness in LIS: " + str(lisBestChs.fitness))
                     if lisBestChs.fitness > self.g_best.fitness:
                         # Let's replace this

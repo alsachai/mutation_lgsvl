@@ -36,8 +36,8 @@ class Simulator(object):
         self.cross_lines = None
         self.edge_lines = None
 
-        # self.connect_lgsvl()
-        # self.load_map(self.lgsvl_map)
+        self.connect_lgsvl()
+        self.load_map(self.lgsvl_map)
         self.isEgoFault = False
         self.isHit = False
         self.maxint = 130
@@ -193,7 +193,6 @@ class Simulator(object):
         self.edge_lines = self.data_prime['lines']['edge_lines']
 
     def runSimulation(self, scenario_obj, json_file, case_id):
-        self.connect_lgsvl()
         while(1):
             break_signal = False
                 
