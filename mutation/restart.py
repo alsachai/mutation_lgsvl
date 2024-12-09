@@ -80,9 +80,9 @@ def generate_restart_scenarios(runner, ga_logger, global_iter, ck_path, scenario
 		if j == pop_size:
 			break
 		# run pop
-		fitness, scenario_id = runner.run(new_pop_candidate[i])
+		fitness, scenario_id, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs = runner.run(new_pop_candidate[i])
 
-		new_element = CorpusElement(scenario_id, new_pop_candidate[i], fitness)
+		new_element = CorpusElement(scenario_id, new_pop_candidate[i], fitness, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs)
 
 		new_scenario_list.append(new_element)
 		

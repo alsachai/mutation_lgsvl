@@ -430,14 +430,20 @@ class Simulator(object):
         period_conflicts, saved_c_npcs = self.findConflicts(self.replay_list, int(time_slice_size), int(mutated_npc_num))
         potential_conflicts, saved_p_npcs = self.find_potential(self.replay_list, int(time_slice_size), int(mutated_npc_num))
         if self.is_exploit:
-            average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
+            if len(period_conflicts) != 0:
+                average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
+            else:
+                average_c = 0
             max_c = 0
             for conflict in period_conflicts:
                 if conflict['score'] > max_c:
                     max_c = conflict['score']
             fitness = average_c + max_c
         else:
-            average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
+            if len(period_conflicts) != 0:
+                average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
+            else:
+                average_c = 0
             number_c = len(period_conflicts)
             fitness = math.log(average_c + 1) + math.log(number_c + 1)
         
