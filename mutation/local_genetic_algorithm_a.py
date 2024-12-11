@@ -50,6 +50,21 @@ class LocalGeneticMutator(object):
         self.global_iter = global_iter
 
     
+    def isStraight(self, ego_pos, npc_pos):
+        if npc_pos[1] + 4.6 < ego_pos[1] and npc_pos[1] + 20 > ego_pos[1]:  # The ego is within a range of 4.6 to 20 units in front of the NPC.  may have mistake
+            if npc_pos[3] > ego_pos[3] - 2 and npc_pos[3] < ego_pos[3] + 2:   # The NPC is within a range of 2 units to the left or right of the ego.
+                return True
+            else:
+                return False
+        elif npc_pos[1] - 4.6 > ego_pos[1] and npc_pos[1] - 20 < ego_pos[1]:  # The NPC is within a range of 4.6 to 20 units in front of the egp. may have mistake
+            # if npc_pos[3] + 2 > ego_pos[3] and npc_pos[3] - 2 < ego_pos[3] and (ego_pos[5] < 269 or ego_pos[5] > 271):
+            if npc_pos[3] + 2 > ego_pos[3] and npc_pos[3] - 2 < ego_pos[3]:
+                return True
+            else:
+                return False
+        else:
+            return False
+        
     def take_checkpoint(self, obj, ck_name):
         ck_file = os.path.join(self.ga_checkpoints_path, ck_name)
         with open(ck_file, 'wb') as ck_f:
@@ -99,7 +114,6 @@ class LocalGeneticMutator(object):
         while i < len(self.pop) :
             eachChs = self.pop[i]
 
-            i += 1
             if len(eachChs.period_conflicts) == 0:
                 continue
                         
@@ -212,6 +226,8 @@ class LocalGeneticMutator(object):
 
                 # Record which chromosomes have been touched
                 self.touched_chs.append(i)
+            
+            i += 1
         
         logger.info('Generate ' + str(len(self.touched_chs)) + ' mutated scenarios')
         # Only run simulation for the chromosomes that are touched in this generation

@@ -55,21 +55,6 @@ class GeneticMutator(object):
         if os.path.exists(self.progress_log):
             os.remove(self.progress_log)
     
-    def isStraight(self, ego_pos, npc_pos):
-        if npc_pos[1] + 4.6 < ego_pos[1] and npc_pos[1] + 20 > ego_pos[1]:  # The ego is within a range of 4.6 to 20 units in front of the NPC.  may have mistake
-            if npc_pos[3] > ego_pos[3] - 2 and npc_pos[3] < ego_pos[3] + 2:   # The NPC is within a range of 2 units to the left or right of the ego.
-                return True
-            else:
-                return False
-        elif npc_pos[1] - 4.6 > ego_pos[1] and npc_pos[1] - 20 < ego_pos[1]:  # The NPC is within a range of 4.6 to 20 units in front of the egp. may have mistake
-            # if npc_pos[3] + 2 > ego_pos[3] and npc_pos[3] - 2 < ego_pos[3] and (ego_pos[5] < 269 or ego_pos[5] > 271):
-            if npc_pos[3] + 2 > ego_pos[3] and npc_pos[3] - 2 < ego_pos[3]:
-                return True
-            else:
-                return False
-        else:
-            return False
-    
     
     def take_checkpoint(self, obj, ck_name):
         ck_file = os.path.join(self.ga_checkpoints_path, ck_name)
@@ -110,7 +95,6 @@ class GeneticMutator(object):
         while(i<len(self.pop)) :
             eachChs = self.pop[i]
             changed = False
-            i += 1
             if len(eachChs.potential_conflicts) != 0:
                 for conflict in eachChs.potential_conflicts:
                     if self.pm >= random.random():
@@ -143,6 +127,7 @@ class GeneticMutator(object):
             # Record which chromosomes have been touched
             if changed == True:
                 self.touched_chs.append(eachChs)
+            i += 1
             
         # Only run simulation for the chromosomes that are touched in this generation
         self.touched_chs = set(self.touched_chs)
@@ -376,7 +361,7 @@ class GeneticMutator(object):
                     local_output_path = os.path.join(self.output_path, 'local_ga', 'local_' + str(i))
                     self.runner.is_exploit = True
                     self.runner.sim.is_exploit = True
-                    lis = LocalGeneticMutator(self.runner, self.selection, local_output_path, i, self.ga_log, self.progress_log, self.scenario_name, self.bounds, self.pm * 1.5, self.pc, self.pop_size, self.NPC_size, self.time_size, self.numOfGenInLis)
+                    lis = LocalGeneticMutator(self.runner, self.selection, local_output_path, i, self.ga_log, self.progress_log, self.scenario_name, self.bounds, self.pm * 1.5, self.pc, self.pop_size, self.NPC_size, self.time_size, self.numOfGenInLis, self.conflict_t, self.conflict_d, self.period)
                     lis.setLisPop(self.g_best)
                     lisBestChs = lis.process(i)
                     self.runner.is_exploit = False
