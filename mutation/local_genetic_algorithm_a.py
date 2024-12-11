@@ -51,14 +51,14 @@ class LocalGeneticMutator(object):
 
     
     def isStraight(self, ego_pos, npc_pos):
-        if npc_pos[1] + 4.6 < ego_pos[1] and npc_pos[1] + 20 > ego_pos[1]:  # The ego is within a range of 4.6 to 20 units in front of the NPC.  may have mistake
-            if npc_pos[3] > ego_pos[3] - 2 and npc_pos[3] < ego_pos[3] + 2:   # The NPC is within a range of 2 units to the left or right of the ego.
+        if npc_pos[3] + 4.6 < ego_pos[3] and npc_pos[3] + 20 > ego_pos[3]:  # The ego is within a range of 4.6 to 20 units in front of the NPC.  may have mistake
+            if npc_pos[1] > ego_pos[1] - 2 and npc_pos[1] < ego_pos[1] + 2:   # The NPC is within a range of 2 units to the left or right of the ego.
                 return True
             else:
                 return False
-        elif npc_pos[1] - 4.6 > ego_pos[1] and npc_pos[1] - 20 < ego_pos[1]:  # The NPC is within a range of 4.6 to 20 units in front of the egp. may have mistake
+        elif npc_pos[3] - 4.6 > ego_pos[3] and npc_pos[3] - 20 < ego_pos[3]:  # The NPC is within a range of 4.6 to 20 units in front of the egp. may have mistake
             # if npc_pos[3] + 2 > ego_pos[3] and npc_pos[3] - 2 < ego_pos[3] and (ego_pos[5] < 269 or ego_pos[5] > 271):
-            if npc_pos[3] + 2 > ego_pos[3] and npc_pos[3] - 2 < ego_pos[3]:
+            if npc_pos[1] + 2 > ego_pos[1] and npc_pos[1] - 2 < ego_pos[1]:
                 return True
             else:
                 return False
