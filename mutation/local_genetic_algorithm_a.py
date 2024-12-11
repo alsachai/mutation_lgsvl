@@ -115,6 +115,7 @@ class LocalGeneticMutator(object):
             eachChs = self.pop[i]
 
             if len(eachChs.period_conflicts) == 0:
+                i = i + 1
                 continue
                         
             if self.pm >= random.random():
