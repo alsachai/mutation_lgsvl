@@ -551,13 +551,12 @@ class Simulator(object):
             end_time = min(start_time + self.period, time_len)
         
             for t in range(start_time, end_time):
-                ego_pos = replay_list[0][t]
+                ego_pos = replay_list[0][t][1:4]
                 # conflict_found = False
                 for dt in range(0, self.conflict_t + 1):
                     # Check past positions
                     if t - dt >= start_time: 
-                        past_pos_index = t - dt - start_time
-                        past_positions = [replay_list[m][t - dt] for m in range(1, npc_len + 1)]
+                        past_positions = [replay_list[m][t - dt][1:4] for m in range(1, npc_len + 1)]
                         distances = np.linalg.norm(np.array(past_positions) - np.array(ego_pos), axis=1)
                         min_distance_idx = np.argmin(distances)
 
@@ -576,7 +575,7 @@ class Simulator(object):
                     # Check future positions
                     if t + dt < end_time: 
                         future_pos_index = t + dt - start_time
-                        future_positions = [replay_list[m][t + dt] for m in range(1, npc_len + 1)]
+                        future_positions = [replay_list[m][t + dt][1:4] for m in range(1, npc_len + 1)]
                         distances = np.linalg.norm(np.array(future_positions) - np.array(ego_pos), axis=1)
                         min_distance_idx = np.argmin(distances)
 
@@ -608,10 +607,10 @@ class Simulator(object):
         saved_npcs = []
         
         for t in range(time_len):
-            ego_pos = replay_list[0][t]
+            ego_pos = replay_list[0][t][1:4]
             for dt in range(self.conflict_t+1, self.conflict_t+7):
                 if t - dt >= 0:
-                    past_positions = [replay_list[m][t - dt] for m in range(1, npc_len + 1)]
+                    past_positions = [replay_list[m][t - dt][1:4] for m in range(1, npc_len + 1)]
                     distances = np.linalg.norm(np.array(past_positions) - np.array(ego_pos), axis=1)
                     min_distance_idx = np.argmin(distances)
                     if distances[min_distance_idx] < self.conflict_d:
@@ -624,7 +623,7 @@ class Simulator(object):
                             saved_npcs.append(min_distance_idx)
                 
                 if t + dt < time_len:
-                    future_positions = [replay_list[m][t + dt] for m in range(1, npc_len + 1)]
+                    future_positions = [replay_list[m][t + dt][1:4] for m in range(1, npc_len + 1)]
                     distances = np.linalg.norm(np.array(future_positions) - np.array(ego_pos), axis=1)
                     min_distance_idx = np.argmin(distances)
                     if distances[min_distance_idx] < self.conflict_d:
