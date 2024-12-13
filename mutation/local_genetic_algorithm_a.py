@@ -1,3 +1,4 @@
+import math
 import os
 import copy
 import random
@@ -7,6 +8,7 @@ import shutil
 from datetime import datetime
 from loguru import logger
 from mutation import restart
+import numpy as np
 
 class LocalGeneticMutator(object):
     def __init__(self, runner, selection, output_path, global_iter, ga_logger, progress_logger, scenario_name, bounds, pm, pc, pop_size, NPC_size, time_size, max_gen, conflict_t, conflict_d, period):
@@ -51,19 +53,18 @@ class LocalGeneticMutator(object):
 
     
     def isStraight(self, ego_pos, npc_pos):
-        if npc_pos[3] + 4.6 < ego_pos[3] and npc_pos[3] + 20 > ego_pos[3]:  # The ego is within a range of 4.6 to 20 units in front of the NPC.  may have mistake
-            if npc_pos[1] > ego_pos[1] - 2 and npc_pos[1] < ego_pos[1] + 2:   # The NPC is within a range of 2 units to the left or right of the ego.
-                return True
-            else:
-                return False
-        elif npc_pos[3] - 4.6 > ego_pos[3] and npc_pos[3] - 20 < ego_pos[3]:  # The NPC is within a range of 4.6 to 20 units in front of the egp. may have mistake
-            # if npc_pos[3] + 2 > ego_pos[3] and npc_pos[3] - 2 < ego_pos[3] and (ego_pos[5] < 269 or ego_pos[5] > 271):
-            if npc_pos[1] + 2 > ego_pos[1] and npc_pos[1] - 2 < ego_pos[1]:
-                return True
-            else:
-                return False
+        target_vector = np.array([npc_pos[1] - ego_pos[1],
+                                  npc_pos[3] - ego_pos[3]])
+        norm_target = np.linalg.norm(target_vector)
+        if norm_target < 0.001:   # same position
+            return True
+        forward_vector = np.array([ego_pos[7], ego_pos[8]])
+        d_angle = math.degrees(math.acos(np.clip(np.dot(forward_vector, target_vector) / norm_target, -1., 1.)))
+        
+        if d_angle < 20.0:
+            True
         else:
-            return False
+            False
         
     def take_checkpoint(self, obj, ck_name):
         ck_file = os.path.join(self.ga_checkpoints_path, ck_name)

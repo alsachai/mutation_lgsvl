@@ -139,6 +139,8 @@ class Simulator(object):
             forward = lgsvl.utils.transform_to_forward(ego_state.transform)
             right = lgsvl.utils.transform_to_right(ego_state.transform)
             self.destination = ego_state.position + des_forward * forward + des_right * right
+            
+            self.replay_list[0][0].extend([forward.x, forward.z])
         elif des_method == 'xyz':
             x = ego_data['destination']['value']['v1']
             y = ego_data['destination']['value']['v2']
@@ -369,13 +371,16 @@ class Simulator(object):
                     break
                 
                 ego_transform = self.ego.state.transform
+                forward = lgsvl.utils.transform_to_forward(ego_transform)
                 self.replay_list[0][t+1].extend([self.get_speed(self.ego),
                                                  ego_transform.position.x,
                                                  ego_transform.position.y,
                                                  ego_transform.position.z,
                                                  ego_transform.rotation.x,
                                                  ego_transform.rotation.y,
-                                                 ego_transform.rotation.z])
+                                                 ego_transform.rotation.z,
+                                                 forward.x,
+                                                 forward.z])
                 for m, npc in enumerate(self.mutated_npc_list, start=1):
                     npc_transform = npc.state.transform
                     self.replay_list[m][t+1].extend([self.get_speed(npc),
@@ -439,12 +444,13 @@ class Simulator(object):
                     max_c = conflict['score']
             fitness = average_c + max_c
         else:
-            if len(period_conflicts) != 0:
-                average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
-            else:
-                average_c = 0
-            number_c = len(period_conflicts)
-            fitness = math.log(average_c + 1) + math.log(number_c + 1)
+            # if len(period_conflicts) != 0:
+            #     average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
+            # else:
+            #     average_c = 0
+            # number_c = len(period_conflicts)
+            # fitness = math.log(average_c + 1) + math.log(number_c + 1)
+            fitness = sum(conflict['score'] for conflict in period_conflicts if conflict is not None)
         
         # Step 2 compute distance and check line error and filter npc_fault
         for t in range(simulation_slices):
