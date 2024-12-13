@@ -126,7 +126,7 @@ class GeneticMutator(object):
                     
             # Record which chromosomes have been touched
             if changed == True:
-                self.touched_chs.append(eachChs)
+                self.touched_chs.append(i)
             i += 1
             
         # Only run simulation for the chromosomes that are touched in this generation
