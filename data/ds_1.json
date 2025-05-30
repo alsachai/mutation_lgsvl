@@ -25,7 +25,7 @@
       }
     },
     {
-      "type": "Sedan",
+      "type": "SUV",
       "goal": "mutated",
       "position": {
         "x": -8,
