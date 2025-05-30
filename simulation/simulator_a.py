@@ -444,13 +444,7 @@ class Simulator(object):
                     max_c = conflict['score']
             fitness = average_c + max_c
         else:
-            # if len(period_conflicts) != 0:
-            #     average_c = sum(conflict['score'] for conflict in period_conflicts if conflict is not None) / len(period_conflicts)
-            # else:
-            #     average_c = 0
-            # number_c = len(period_conflicts)
-            # fitness = math.log(average_c + 1) + math.log(number_c + 1)
-            fitness = sum(conflict['score'] for conflict in period_conflicts if conflict is not None)
+            fitness = len(period_conflicts)
         
         # Step 2 compute distance and check line error and filter npc_fault
         for t in range(simulation_slices):

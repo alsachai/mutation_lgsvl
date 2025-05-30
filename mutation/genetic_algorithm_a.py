@@ -136,10 +136,7 @@ class GeneticMutator(object):
         for i in self.touched_chs:
             eachChs = self.pop[i]
             before_fitness = eachChs.fitness
-            # TODO: fixed
-            # 1. run simulator for each modified elements
             fitness, scenario_id, replay_list, period_conflicts, saved_c_npcs, potential_conflicts, saved_p_npcs = self.runner.run(eachChs.scenario)
-            # 2. creat new elements or update fitness_score and coverage feat
             eachChs.fitness = fitness
             eachChs.scenario_id = scenario_id
             eachChs.replay_list = replay_list
@@ -281,10 +278,8 @@ class GeneticMutator(object):
             # util.print_debug(" \n\n*** " + str(i) + "th generation ***")
             logger.info("    *** " + str(i) + "th generation ***    ")
             
-            # Make sure we clear touched_chs history book every gen
-            # TODO: this process has bug
             self.touched_chs = []
-            # self.cross()
+            self.cross()
             self.mutation(i)
             if self.selection == 'top':
                 self.select_top2()

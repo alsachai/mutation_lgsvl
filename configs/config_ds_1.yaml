@@ -3,7 +3,7 @@ output_path: outputs/ds_1_v2 # absolute path
 lgsvl_map: SanFrancisco_correct
 apollo_map: SanFrancisco
 
-pop_size: 4
+pop_size: 10
 npc_size: 2
 time_size: 30
 conflict_time: 4
@@ -17,4 +17,4 @@ max_gen: 100
 selection: roulette
 
 # apollo reltaed path config
-default_record_folder: /home/tieriv/alsachai/apollo/data/bag # False means ignoring records
+default_record_folder: False # False means ignoring records
