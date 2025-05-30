@@ -602,7 +602,7 @@ class Simulator(object):
         
         for t in range(time_len):
             ego_pos = replay_list[0][t][1:4]
-            for dt in range(self.conflict_t+1, self.conflict_t+7):
+            for dt in range(self.conflict_t+1, self.conflict_t+13):
                 if t - dt >= 0:
                     past_positions = [replay_list[m][t - dt][1:4] for m in range(1, npc_len + 1)]
                     distances = np.linalg.norm(np.array(past_positions) - np.array(ego_pos), axis=1)
