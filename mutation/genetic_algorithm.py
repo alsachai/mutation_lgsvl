@@ -42,7 +42,6 @@ class GeneticMutator(object):
             shutil.rmtree(self.ga_checkpoints_path)
         os.makedirs(self.ga_checkpoints_path)
 
-        # TODO: add inner log
         self.ga_log = os.path.join(self.output_path, 'logs/ga.log')
         if os.path.exists(self.ga_log):
             os.remove(self.ga_log)
@@ -115,10 +114,7 @@ class GeneticMutator(object):
         for i in self.touched_chs:
             eachChs = self.pop[i]
             before_fitness = eachChs.fitness
-            # TODO: fixed
-            # 1. run simulator for each modified elements
             fitness, scenario_id = self.runner.run(eachChs.scenario)
-            # 2. creat new elements or update fitness_score and coverage feat
             eachChs.fitness = fitness
             eachChs.scenario_id = scenario_id
             after_fitness = eachChs.fitness
@@ -255,7 +251,6 @@ class GeneticMutator(object):
             logger.info("    *** " + str(i) + "th generation ***    ")
             
             # Make sure we clear touched_chs history book every gen
-            # TODO: this process has bug
             self.touched_chs = []
             self.cross()
             self.mutation(i)

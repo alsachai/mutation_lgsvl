@@ -58,7 +58,6 @@ def generate_restart_scenarios(runner, ga_logger, global_iter, ck_path, scenario
 		for j in range(pop_pool_size):
 			simi_pop = 0
 			for k in range(scenario_size):
-				# TODO
 				scenario1 = new_pop_candidate[i]
 				scenario2 = pre_pop_pool[j][k].scenario
 				simi = tools.get_similarity_between_scenarios(scenario1, scenario2)

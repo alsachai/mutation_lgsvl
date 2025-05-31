@@ -3,7 +3,6 @@ import math
 import pickle
 import shutil
 
-#TODO: how to extract this file from apollo or is that neccessary? 
 from loguru import logger
 from simulation.simulator import Simulator
 
@@ -58,7 +57,6 @@ class Runner(object):
         if sim_result is None:
             print('sim_result is None, ERROR')
             exit(-1)
-        # TODO: add test log, to record test results.
         
         sim_fault = sim_result['fault']
         with open(self.runner_log, 'a') as f:

@@ -46,7 +46,6 @@ class GeneticMutator(object):
             shutil.rmtree(self.ga_checkpoints_path)
         os.makedirs(self.ga_checkpoints_path)
 
-        # TODO: add inner log
         self.ga_log = os.path.join(self.output_path, 'logs/ga.log')
         if os.path.exists(self.ga_log):
             os.remove(self.ga_log)

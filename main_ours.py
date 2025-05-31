@@ -9,7 +9,7 @@ from mutation.genetic_algorithm_a import GeneticMutator
 from simulation.run_parse_a import Runner
 
 level = "INFO"
-logger.configure(handlers=[{"sink": sys.stderr, "level": level}]) # TODO: fix file output
+logger.configure(handlers=[{"sink": sys.stderr, "level": level}])
 
 class Fuzzer(object):
 

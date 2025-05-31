@@ -39,7 +39,6 @@ class LocalGeneticMutator(object):
             shutil.rmtree(self.ga_checkpoints_path)
         os.makedirs(self.ga_checkpoints_path)
         
-        # TODO: add inner log
         self.ga_log = ga_logger
         self.progress_log = progress_logger
         self.global_iter = global_iter
